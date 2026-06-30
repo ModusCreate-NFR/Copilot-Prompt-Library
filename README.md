@@ -1,7 +1,7 @@
 # ⚡ Modus Create Prompt Library
 
 A curated, **searchable** library of battle-tested AI prompts for the whole organization —
-QA, developers, DevOps, data, product, sales and leadership.
+Developers, QA, DevOps, Data, Product, Sales and Leadership.
 
 Zero dependencies. Zero build step. Zero credentials. Just open it, search, and **copy**.
 
@@ -15,7 +15,7 @@ Most people use AI assistants at 10% of their potential because they don't know 
 This library packages the prompts that actually work into one place the whole team can search,
 copy, and contribute to.
 
-- **For everyone** — filter by role (QA, Dev, Sales, Leadership…) or search free-text.
+- **For everyone** — filter by role (Dev, QA, Sales, Leadership…) or search free-text.
 - **Copy-ready** — every prompt has placeholders like `[PASTE CODE]` so you just fill in the blanks.
 - **Self-contained** — a single static site, no server, no login, no data leaves the page.
 - **Team-owned** — add a prompt by editing one file and opening a pull request.

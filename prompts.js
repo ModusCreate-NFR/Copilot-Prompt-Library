@@ -29,6 +29,8 @@ globalThis.PROMPT_LIBRARY = {
     { id: 'review', name: 'Code Review', blurb: 'Review pull requests and raise quality.' },
     { id: 'debug', name: 'Debugging', blurb: 'Find root causes fast.' },
     { id: 'devops', name: 'DevOps & CI/CD', blurb: 'Pipelines, IaC and release automation.' },
+    { id: 'devsecops', name: 'DevSecOps', blurb: 'Shift-left security, supply chain, and secure pipelines.' },
+    { id: 'security', name: 'Security Analysis', blurb: 'Threat modeling, pen testing, incident response and compliance.' },
     { id: 'data', name: 'Data & SQL', blurb: 'Queries, transforms and analysis.' },
     { id: 'docs', name: 'Documentation', blurb: 'READMEs, ADRs and explanations.' },
     { id: 'product', name: 'Product & Analysis', blurb: 'Requirements, stories and acceptance criteria.' },
@@ -706,6 +708,242 @@ globalThis.PROMPT_LIBRARY = {
 'Help me run a 45-minute retrospective for this iteration.\n\n[PASTE WHAT HAPPENED / METRICS]\n\n' +
 'Suggest a format, 5 framing questions, and how to timebox each part. Then, from the notes above,\n' +
 'draft candidate action items as concrete, owned, time-bound commitments (not vague intentions).',
+    },
+
+    // ---------------- DevSecOps ----------------
+    {
+      id: 'devsecops-sast-review',
+      title: 'Triage SAST findings and fix critical ones',
+      category: 'devsecops',
+      roles: ['DevSecOps', 'Dev'],
+      tags: ['sast', 'static-analysis', 'triage', 'remediation'],
+      use: 'Use when your SAST tool dumps a long findings list and you need to prioritize.',
+      prompt:
+'Here are SAST findings from our scanner.\n\n[PASTE FINDINGS: rule, severity, file, line]\n\n' +
+'For each finding: confirm if it is a true positive or false positive with reasoning. For true\n' +
+'positives, rank by exploitability (Critical > High > Medium > Low), give the fix, and explain\n' +
+'the attack scenario it prevents. Group false positives with justification for suppression.',
+    },
+    {
+      id: 'devsecops-dependency-audit',
+      title: 'Audit and remediate vulnerable dependencies',
+      category: 'devsecops',
+      roles: ['DevSecOps', 'Dev'],
+      tags: ['sca', 'dependencies', 'cve', 'supply-chain'],
+      use: 'Use when npm audit / Snyk / Dependabot flags vulnerabilities.',
+      prompt:
+'Here is the output of our dependency vulnerability scan.\n\n[PASTE AUDIT OUTPUT]\n\n' +
+'For each vulnerability: explain the risk in context of OUR app (is the vulnerable code path\n' +
+'actually reachable?), recommend upgrade vs patch vs workaround, flag breaking changes in the\n' +
+'upgrade path, and give the exact commands to remediate. Prioritize by CVSS and reachability.',
+    },
+    {
+      id: 'devsecops-secrets-scan',
+      title: 'Detect and rotate leaked secrets',
+      category: 'devsecops',
+      roles: ['DevSecOps', 'Security Analyst'],
+      tags: ['secrets', 'credentials', 'rotation', 'git-history'],
+      use: 'Use when a secret is found in code or git history.',
+      prompt:
+'A secret was detected in our repository.\n\nSecret type: [API KEY / TOKEN / PASSWORD / CERT]\n' +
+'Where found: [FILE / COMMIT / CI LOG]\nService it belongs to: [SERVICE]\n\n' +
+'Give me a step-by-step incident response plan: immediate containment (revoke/rotate), how to\n' +
+'scrub it from git history (BFG / filter-repo), how to confirm it was not exploited (audit logs\n' +
+'to check), and preventive controls to add (pre-commit hooks, secret scanning, vault references).',
+    },
+    {
+      id: 'devsecops-container-hardening',
+      title: 'Harden a container image',
+      category: 'devsecops',
+      roles: ['DevSecOps', 'Dev'],
+      tags: ['docker', 'container', 'hardening', 'trivy', 'grype'],
+      use: 'Use to reduce attack surface of a production container.',
+      prompt:
+'Review this Dockerfile and container scan results for security issues.\n\n' +
+'[PASTE DOCKERFILE]\n[PASTE SCAN RESULTS (Trivy/Grype/Scout)]\n\n' +
+'Identify: base image risks, packages to remove, user privilege issues, exposed ports,\n' +
+'missing health checks, and secrets baked into layers. Rewrite the Dockerfile with fixes\n' +
+'applied and explain each hardening measure. Target a minimal, non-root, distroless final stage.',
+    },
+    {
+      id: 'devsecops-pipeline-security',
+      title: 'Secure a CI/CD pipeline',
+      category: 'devsecops',
+      roles: ['DevSecOps'],
+      tags: ['ci-cd', 'pipeline', 'supply-chain', 'permissions', 'oidc'],
+      use: 'Use to audit and harden a GitHub Actions / CI pipeline.',
+      prompt:
+'Review this CI/CD pipeline configuration for security weaknesses.\n\n[PASTE PIPELINE YAML]\n\n' +
+'Check for: overly broad permissions, unpinned action versions, secret exposure in logs,\n' +
+'self-hosted runner risks, missing environment protections, artifact integrity, and OIDC vs\n' +
+'long-lived credentials. For each finding give severity, the vulnerable line, and the fix.\n' +
+'Rewrite the pipeline with all fixes applied.',
+    },
+    {
+      id: 'devsecops-iac-review',
+      title: 'Security review Infrastructure as Code',
+      category: 'devsecops',
+      roles: ['DevSecOps', 'Dev'],
+      tags: ['terraform', 'cloudformation', 'iac', 'misconfiguration'],
+      use: 'Use to catch misconfigurations before they reach production.',
+      prompt:
+'Review this IaC template for security misconfigurations.\n\n[PASTE TERRAFORM / CLOUDFORMATION / YAML]\n\n' +
+'Check against CIS benchmarks and cloud provider best practices. Look for: public exposure,\n' +
+'overly permissive IAM, unencrypted storage/transit, missing logging, default credentials,\n' +
+'and network segmentation gaps. For each finding: severity, resource, the misconfiguration,\n' +
+'compliance reference (CIS/AWS Well-Architected), and the corrected code block.',
+    },
+    {
+      id: 'devsecops-sbom',
+      title: 'Generate and analyze an SBOM',
+      category: 'devsecops',
+      roles: ['DevSecOps', 'Security Analyst'],
+      tags: ['sbom', 'supply-chain', 'compliance', 'licensing'],
+      use: 'Use to understand your software supply chain and license obligations.',
+      prompt:
+'Here is our project manifest (package.json / requirements.txt / go.mod / pom.xml).\n\n' +
+'[PASTE MANIFEST]\n\n' +
+'Generate a summary SBOM analysis: total direct vs transitive dependencies, identify any with\n' +
+'known CVEs, flag copyleft or restrictive licenses that conflict with [OUR LICENSE: e.g. MIT /\n' +
+'proprietary], highlight unmaintained packages (no release in 2+ years), and recommend\n' +
+'alternatives for risky dependencies.',
+    },
+    {
+      id: 'devsecops-shift-left-checklist',
+      title: 'Create a security gate checklist for PRs',
+      category: 'devsecops',
+      roles: ['DevSecOps'],
+      tags: ['shift-left', 'pr-review', 'checklist', 'sdlc'],
+      use: 'Use to define what security checks should block a merge.',
+      prompt:
+'Design a lightweight security checklist that developers can self-serve during pull requests\n' +
+'for this type of application: [DESCRIBE: web app / API / microservice / mobile / IaC].\n\n' +
+'Organize by category (auth, input validation, secrets, dependencies, logging, data protection).\n' +
+'Each item should be a yes/no check with a one-line "why it matters." Keep it to max 15 items\n' +
+'so it actually gets used. Suggest which ones can be automated vs require human judgment.',
+    },
+
+    // ---------------- Security Analysis ----------------
+    {
+      id: 'sec-threat-model',
+      title: 'Threat model a feature (STRIDE)',
+      category: 'security',
+      roles: ['Security Analyst', 'Dev'],
+      tags: ['threat-modeling', 'stride', 'risk', 'design-review'],
+      use: 'Use during design phase to identify threats before code is written.',
+      prompt:
+'Perform a threat model using STRIDE for the following feature/system.\n\n' +
+'[DESCRIBE: architecture, data flows, trust boundaries, actors]\n\n' +
+'For each STRIDE category (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of\n' +
+'Service, Elevation of Privilege): identify applicable threats, rate likelihood and impact\n' +
+'(High/Medium/Low), propose mitigations, and note which threats are already covered by existing\n' +
+'controls. Present as a table and highlight the top 3 risks requiring immediate attention.',
+    },
+    {
+      id: 'sec-pentest-plan',
+      title: 'Plan a penetration test scope',
+      category: 'security',
+      roles: ['Security Analyst'],
+      tags: ['pentest', 'scope', 'methodology', 'engagement'],
+      use: 'Use to define scope and approach before a pen test engagement.',
+      prompt:
+'Help me scope a penetration test for this application.\n\n' +
+'Application: [DESCRIBE: type, tech stack, hosting, auth mechanism]\n' +
+'Environment: [PROD / STAGING / DEDICATED]\nConstraints: [TIME / BUDGET / OFF-LIMITS AREAS]\n\n' +
+'Produce: objectives, in-scope and out-of-scope items, methodology (OWASP WSTG / PTES phases),\n' +
+'tools to use per phase, rules of engagement, success criteria, and deliverables format.\n' +
+'Flag any areas that need client sign-off before testing.',
+    },
+    {
+      id: 'sec-vulnerability-writeup',
+      title: 'Write a vulnerability report',
+      category: 'security',
+      roles: ['Security Analyst'],
+      tags: ['vulnerability', 'report', 'cvss', 'disclosure'],
+      use: 'Use to document a finding professionally for stakeholders.',
+      prompt:
+'Write a formal vulnerability report for this finding.\n\n' +
+'[DESCRIBE: what you found, where, how to reproduce]\n\n' +
+'Include: Title, CVSS 3.1 score with vector string and justification, affected component,\n' +
+'description, proof of concept (sanitized), impact statement, remediation recommendation\n' +
+'(immediate and long-term), references (CWE, OWASP), and a timeline for responsible disclosure\n' +
+'if external. Keep technical detail precise but make the impact understandable to leadership.',
+    },
+    {
+      id: 'sec-incident-response',
+      title: 'Draft an incident response playbook',
+      category: 'security',
+      roles: ['Security Analyst', 'DevSecOps'],
+      tags: ['incident-response', 'playbook', 'forensics', 'containment'],
+      use: 'Use to create a runbook for a specific incident type.',
+      prompt:
+'Create an incident response playbook for this scenario:\n\n[INCIDENT TYPE: e.g. data breach /\n' +
+'ransomware / compromised credentials / DDoS / insider threat]\n\n' +
+'Cover the NIST IR phases: Preparation, Detection & Analysis, Containment, Eradication,\n' +
+'Recovery, Post-Incident. For each phase give: specific actions, responsible role, tools/commands,\n' +
+'evidence to preserve, communication templates (internal + external), and escalation criteria.\n' +
+'Include a decision tree for severity classification.',
+    },
+    {
+      id: 'sec-compliance-gap',
+      title: 'Identify compliance gaps (SOC 2 / ISO 27001)',
+      category: 'security',
+      roles: ['Security Analyst', 'Leadership'],
+      tags: ['compliance', 'soc2', 'iso27001', 'gap-analysis', 'audit'],
+      use: 'Use to prepare for an audit or assess current posture.',
+      prompt:
+'We are preparing for [SOC 2 Type II / ISO 27001 / PCI DSS / HIPAA] certification.\n\n' +
+'Here is what we currently have in place:\n[PASTE: current controls, policies, tools]\n\n' +
+'Perform a gap analysis: map our current state against the framework requirements, identify\n' +
+'gaps (missing controls, insufficient evidence, policy gaps), prioritize by audit risk,\n' +
+'and recommend specific remediation actions with estimated effort (quick win / medium / major).\n' +
+'Call out any gaps that could be blockers for certification.',
+    },
+    {
+      id: 'sec-attack-surface',
+      title: 'Map the attack surface of an application',
+      category: 'security',
+      roles: ['Security Analyst', 'DevSecOps'],
+      tags: ['attack-surface', 'reconnaissance', 'inventory', 'exposure'],
+      use: 'Use to systematically identify all entry points an attacker could target.',
+      prompt:
+'Map the attack surface for this application.\n\n[DESCRIBE: architecture, endpoints, APIs,\n' +
+'auth flows, third-party integrations, data stores, deployment model]\n\n' +
+'Enumerate: all entry points (APIs, web forms, file uploads, WebSockets, admin panels),\n' +
+'data flows crossing trust boundaries, authentication/authorization surfaces, third-party\n' +
+'dependencies with network access, and infrastructure exposure. Rate each surface by\n' +
+'attractiveness to an attacker (High/Medium/Low) and suggest monitoring or hardening for the\n' +
+'top risk areas.',
+    },
+    {
+      id: 'sec-security-policy',
+      title: 'Draft a security policy document',
+      category: 'security',
+      roles: ['Security Analyst', 'Leadership'],
+      tags: ['policy', 'governance', 'standards', 'documentation'],
+      use: 'Use to create or update organizational security policies.',
+      prompt:
+'Draft a [POLICY TYPE: e.g. Acceptable Use / Access Control / Incident Response / Data\n' +
+'Classification / Vulnerability Management] policy for our organization.\n\n' +
+'Context: [INDUSTRY, SIZE, COMPLIANCE REQUIREMENTS]\n\n' +
+'Include: Purpose, Scope, Definitions, Policy statements (specific and enforceable),\n' +
+'Roles and responsibilities, Exceptions process, Enforcement and consequences,\n' +
+'Review cadence. Keep it concise, actionable, and auditor-friendly. Flag areas where we\n' +
+'need to make a decision between options.',
+    },
+    {
+      id: 'sec-log-analysis',
+      title: 'Analyze security logs for indicators of compromise',
+      category: 'security',
+      roles: ['Security Analyst'],
+      tags: ['logs', 'siem', 'ioc', 'detection', 'forensics'],
+      use: 'Use to investigate suspicious activity in log data.',
+      prompt:
+'Analyze these security logs for indicators of compromise.\n\n[PASTE LOG ENTRIES]\n\n' +
+'Identify: anomalous patterns, failed auth attempts, privilege escalation, data exfiltration\n' +
+'indicators, lateral movement signs, and timeline of events. For each finding: describe what\n' +
+'happened, severity, affected assets, IOCs to search for elsewhere, and recommended immediate\n' +
+'actions. Produce a timeline and a list of IOCs (IPs, hashes, user agents) for blocking.',
     },
 
     // ---------------- Copilot Tips ----------------

@@ -37,6 +37,8 @@ one file: [`prompts.js`](prompts.js).
 | `review` | Code Review |
 | `debug` | Debugging |
 | `devops` | DevOps & CI/CD |
+| `devsecops` | DevSecOps |
+| `security` | Security Analysis |
 | `data` | Data & SQL |
 | `docs` | Documentation |
 | `product` | Product & Analysis |
