@@ -1,5 +1,5 @@
 /*
- * Copilot Prompt Library — app logic
+ * Modus Create Prompt Library — app logic
  * Vanilla JS, no build step, no dependencies. Reads window.PROMPT_LIBRARY.
  */
 (function () {
@@ -190,7 +190,7 @@
     var list = PROMPTS.filter(matches);
     if (!list.length) { showToast('Nothing to export'); return; }
     var fence = '```';
-    var lines = ['# Copilot Prompt Library', ''];
+    var lines = ['# Modus Create Prompt Library', ''];
     if (state.category !== 'all') lines.push('_Category: ' + (catName[state.category] || state.category) + '_', '');
     if (state.query.trim()) lines.push('_Search: ' + state.query.trim() + '_', '');
     list.forEach(function (p) {

@@ -1,11 +1,11 @@
-# ⚡ Copilot Prompt Library
+# ⚡ Modus Create Prompt Library
 
 A curated, **searchable** library of battle-tested AI prompts for the whole organization —
 QA, developers, DevOps, data, product, sales and leadership.
 
 Zero dependencies. Zero build step. Zero credentials. Just open it, search, and **copy**.
 
-> Built with GitHub Copilot, to help everyone get more out of GitHub Copilot.
+> Built with AI, to help everyone get more out of any AI assistant.
 
 ---
 
@@ -48,17 +48,11 @@ python3 -m http.server 8080
 
 ## Deploy to GitHub Pages
 
-**Option A — automatic (included workflow):**
-
 1. Push this folder to a GitHub repository (default branch `main`).
-2. In the repo, go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. The included workflow ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) publishes the
-   site on every push to `main`. Your URL appears in the Actions run summary.
+2. Go to **Settings → Pages → Source: Deploy from a branch → `main` / root**.
+3. Wait a minute, then open the published URL.
 
-**Option B — no workflow:**
-
-1. **Settings → Pages → Source: Deploy from a branch → `main` / root**.
-2. Wait a minute, then open the published URL.
+Every push to `main` auto-updates the live site.
 
 ## Add your own prompt
 
@@ -88,8 +82,7 @@ The entire dataset lives in [prompts.js](prompts.js). To add a prompt, copy one 
 | `styles.css` | Styling + light/dark theme |
 | `app.js` | Search, filter, copy, export, theme |
 | `prompts.js` | **The content** — edit this to add prompts |
-| `.github/workflows/deploy.yml` | Auto-deploy to GitHub Pages |
 
 ## License
 
-Internal/company use. Add a license file if you open-source it.
+MIT — Modus Create.

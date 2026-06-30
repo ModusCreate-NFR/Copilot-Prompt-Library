@@ -1,5 +1,5 @@
 /*
- * Copilot Prompt Library — data file
+ * Modus Create Prompt Library — data file
  * -----------------------------------
  * This is the ONLY file most contributors need to edit.
  * Add a new prompt by copying an object in the `prompts` array below.
