@@ -17,8 +17,8 @@
  */
 globalThis.PROMPT_LIBRARY = {
   meta: {
-    title: 'Copilot Prompt Library',
-    subtitle: 'Battle-tested prompts for the whole team — QA, Dev, Sales & Leadership.',
+    title: 'Modus Create Prompt Library',
+    subtitle: 'Battle-tested prompts for the whole team — works with GitHub Copilot, ChatGPT, Claude, Gemini & any AI assistant.',
     updated: '2026-06-30',
   },
 
