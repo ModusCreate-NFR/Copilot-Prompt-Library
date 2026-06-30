@@ -12,7 +12,9 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # Allow one Pages deployment at a time but let in-progress runs finish.
+  # Cancelling them causes "Error: Deployment cancelled" on overlapping pushes.
+  cancel-in-progress: false
 
 jobs:
   deploy:
